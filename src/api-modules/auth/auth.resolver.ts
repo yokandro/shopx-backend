@@ -7,6 +7,7 @@ import { EmailPasswordGuard } from './guards';
 import { CurrentAccount } from './auth.decorators';
 import { AuthService } from './auth.service';
 import { TokensModel } from './auth.models';
+import { RefreshTokenGuard } from './guards/refresh-token.guard';
 
 @Resolver()
 export class AuthResolver {
@@ -19,6 +20,12 @@ export class AuthResolver {
     @Args('email') email: string,
     @Args('password') password: string
   ): Promise<TokensModel> {
-    return this.authService.login(account);
+    return this.authService.refreshJwtTokens(account);
+  }
+
+  @Mutation(() => TokensModel)
+  @UseGuards(RefreshTokenGuard)
+  async refreshTokens(@CurrentAccount() account: Account): Promise<TokensModel> {
+    return this.authService.refreshJwtTokens(account);
   }
 }

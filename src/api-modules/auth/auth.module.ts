@@ -6,9 +6,17 @@ import { AccountsModule } from 'src/api-modules/users/accounts/accounts.module';
 import { AuthService } from './auth.service';
 import { AuthResolver } from './auth.resolver';
 import { EmailPasswordStrategy } from './strategies';
+import { AccessTokenStrategy } from './strategies/access-token.strategy';
+import { RefreshTokenStrategy } from './strategies/refresh-token.strategy';
 
 @Module({
   imports: [AccountsModule, JwtModule],
-  providers: [AuthService, EmailPasswordStrategy, AuthResolver],
+  providers: [
+    AuthService,
+    AuthResolver,
+    EmailPasswordStrategy,
+    AccessTokenStrategy,
+    RefreshTokenStrategy,
+  ],
 })
 export class AuthModule {}

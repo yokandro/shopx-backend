@@ -23,6 +23,10 @@ export class Account extends BaseModel {
   @Field(() => String)
   @Prop({ type: String, required: true })
   lastName: string;
+
+  @Field(() => String)
+  @Prop({ type: String })
+  hashedRefreshToken?: string;
 }
 
 export type AccountDocument = Account & Document;

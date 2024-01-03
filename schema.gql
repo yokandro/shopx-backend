@@ -12,6 +12,7 @@ type Account {
   email: String!
   firstName: String!
   hashedPassword: String!
+  hashedRefreshToken: String!
   lastName: String!
   updatedAt: DateTime!
   updatedBy: String
@@ -24,10 +25,11 @@ scalar DateTime
 
 type Mutation {
   login(email: String!, password: String!): TokensModel!
+  refreshTokens: TokensModel!
 }
 
 type Query {
-  getAccountById(id: String!): Account!
+  getCurrentAccount: Account!
 }
 
 type TokensModel {

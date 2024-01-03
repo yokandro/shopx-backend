@@ -30,7 +30,7 @@ export class AccountsService implements OnModuleInit {
     return await this.accountModel.create({ ...accountToCreate, hashedPassword });
   }
 
-  async getAccountById(id: string): Promise<Account> {
+  async getAccountById(id: Types.ObjectId): Promise<Account> {
     const account = await this.accountModel.findById(id);
 
     if (!account) {
@@ -48,6 +48,20 @@ export class AccountsService implements OnModuleInit {
     }
 
     return account;
+  }
+
+  async getAccountByRefreshToken(refreshToken: string, email: string): Promise<Account> {
+    const account = await this.getAccountByEmail(email);
+
+    if (account) {
+      const isTokenMatching = await bcrypt.compare(refreshToken, account.hashedRefreshToken || '');
+
+      if (isTokenMatching) {
+        return account;
+      }
+    }
+
+    return null;
   }
 
   public async setCurrentRefreshToken(

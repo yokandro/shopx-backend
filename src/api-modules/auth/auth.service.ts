@@ -33,10 +33,6 @@ export class AuthService {
     });
   }
 
-  async login(account: Account): Promise<TokensModel> {
-    return this.refreshJwtTokens(account);
-  }
-
   async validate(email: string, password: string): Promise<Account> | null {
     const account = await this.accountsService.getAccountByEmail(email);
 
