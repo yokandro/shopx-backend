@@ -10,11 +10,7 @@ import { INITIAL_SHOPX_ACCOUNTS, INITIAL_SHOPX_ACCOUNTS_IDS } from './accounts.c
 
 @Injectable()
 export class AccountsService implements OnModuleInit {
-  private readonly accountModel: AccountModel;
-
-  constructor(@InjectModel(Account.name) accountModel: AccountModel) {
-    this.accountModel = accountModel;
-  }
+  constructor(@InjectModel(Account.name) private readonly accountModel: AccountModel) {}
 
   async createAccount(args: CreateAccountType): Promise<Account> {
     const { password, ...accountToCreate } = args;

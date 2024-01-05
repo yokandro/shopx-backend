@@ -18,18 +18,61 @@ type Account {
   updatedBy: String
 }
 
+type CategoriesPayload {
+  collection: [Category!]!
+  totalCount: Float!
+}
+
+type Category {
+  _id: String!
+  createdAt: DateTime!
+  createdBy: String
+  deleted: Boolean!
+  deletedAt: DateTime
+  deletedBy: String
+  name: String!
+  parentCategoryId: ObjectId
+  parentCategoryPath: String
+  updatedAt: DateTime!
+  updatedBy: String
+}
+
+input CreateCategoryInput {
+  name: String!
+  parentCategoryId: ObjectId
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
 
+input GetCategoryFilterInput {
+  searchTerm: String
+}
+
 type Mutation {
+  createCategory(input: CreateCategoryInput!): Category!
   login(email: String!, password: String!): TokensModel!
   refreshTokens: TokensModel!
 }
 
+"""Mongo Object ID scalar type"""
+scalar ObjectId
+
+input PaginationInput {
+  limit: Float! = 10
+  skip: Float! = 0
+}
+
 type Query {
+  getCategories(filter: GetCategoryFilterInput, pagination: PaginationInput, sort: SortInput): CategoriesPayload!
   getCurrentAccount: Account!
+}
+
+input SortInput {
+  sortBy: String
+  sortOrder: Float
 }
 
 type TokensModel {

@@ -9,6 +9,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { isDevelopment } from 'src/api-modules/common/common.helpers';
 
 import ApiModules from './api-modules';
+import { ObjectIdScalar } from './app.graphql-scalar';
 
 @Module({
   imports: [
@@ -40,5 +41,6 @@ import ApiModules from './api-modules';
     }),
     ...ApiModules,
   ],
+  providers: [ObjectIdScalar],
 })
 export class AppModule {}
