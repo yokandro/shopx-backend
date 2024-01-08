@@ -25,9 +25,9 @@ export class Product extends BaseModel {
   @Prop({ type: Number, required: true })
   price: number;
 
-  @Field(() => Number)
-  @Prop({ type: Number, required: true, min: 0, max: 5 })
-  rating: number;
+  @Field(() => Number, { nullable: true })
+  @Prop({ type: Number, min: 0, max: 5 })
+  rating?: number;
 
   @Field(() => Number)
   @Prop({ type: Number, unique: true, required: true })
