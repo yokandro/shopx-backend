@@ -25,7 +25,9 @@ export class CategoryService {
       .limit(pagination?.limit)
       .sort({ [sort?.sortBy || 'createdAt']: sort?.sortOrder || 1 } as any);
 
-    const totalCount = await this.categoryModel.countDocuments();
+    const totalCount = await this.categoryModel
+      .find({ name: { $regex: filter?.searchTerm || '', $options: 'i' } })
+      .countDocuments();
 
     return {
       collection,
@@ -33,7 +35,7 @@ export class CategoryService {
     };
   }
 
-  async getParentCategoryPath(categoryId: Types.ObjectId): Promise<string> {
-    return '';
+  async getCategoryById(id: Types.ObjectId): Promise<Category> {
+    return this.categoryModel.findById(id);
   }
 }

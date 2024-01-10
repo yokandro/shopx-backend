@@ -32,9 +32,22 @@ export class Product extends BaseModel {
   @Field(() => Number)
   @Prop({ type: Number, unique: true, required: true })
   code: number;
+
+  // resolvers
+  @Field(() => String)
+  categoryName: string;
 }
 
-export type ProductDocument = Category & Document;
+@ObjectType()
+export class ProductsOutput {
+  @Field(() => [Product])
+  collection: Product[];
+
+  @Field(() => Number)
+  totalCount: number;
+}
+
+export type ProductDocument = Product & Document;
 export type ProductModel = Model<ProductDocument>;
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

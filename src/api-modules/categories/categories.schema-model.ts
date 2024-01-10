@@ -14,10 +14,6 @@ export class Category extends BaseModel {
   @Field(() => Types.ObjectId, { nullable: true })
   @Prop({ type: Types.ObjectId })
   parentCategoryId?: Types.ObjectId;
-
-  // resolvers
-  @Field(() => String, { nullable: true })
-  parentCategoryPath?: string;
 }
 
 @ObjectType()

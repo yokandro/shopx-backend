@@ -1,4 +1,4 @@
-import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 
 import { AccessTokenGuard } from 'src/api-modules/auth/guards/access-token.guard';
@@ -29,10 +29,5 @@ export class CategoryResolver {
     @Args({ type: () => GetCategoriesArgs }) args: GetCategoriesArgs
   ): Promise<CategoriesPayload> {
     return this.categoryService.getCategories(args);
-  }
-
-  @ResolveField(() => String, { nullable: true })
-  async parentCategoryPath(@Parent() { _id: categoryId }: Category): Promise<string> {
-    return this.categoryService.getParentCategoryPath(categoryId);
   }
 }

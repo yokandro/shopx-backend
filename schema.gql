@@ -32,7 +32,6 @@ type Category {
   deletedBy: String
   name: String!
   parentCategoryId: ObjectId
-  parentCategoryPath: String
   updatedAt: DateTime!
   updatedBy: String
 }
@@ -40,6 +39,13 @@ type Category {
 input CreateCategoryInput {
   name: String!
   parentCategoryId: ObjectId
+}
+
+input CreateProductInput {
+  categoryId: ObjectId!
+  description: String
+  name: String!
+  price: Float!
 }
 
 """
@@ -51,8 +57,13 @@ input GetCategoryFilterInput {
   searchTerm: String
 }
 
+input GetProductsFilterInput {
+  searchTerm: String
+}
+
 type Mutation {
   createCategory(input: CreateCategoryInput!): Category!
+  createProduct(input: CreateProductInput!): Product!
   login(email: String!, password: String!): TokensModel!
   refreshTokens: TokensModel!
 }
@@ -65,9 +76,33 @@ input PaginationInput {
   skip: Float! = 0
 }
 
+type Product {
+  _id: String!
+  categoryId: ObjectId!
+  categoryName: String!
+  code: Float!
+  createdAt: DateTime!
+  createdBy: String
+  deleted: Boolean!
+  deletedAt: DateTime
+  deletedBy: String
+  description: String
+  name: String!
+  price: Float!
+  rating: Float
+  updatedAt: DateTime!
+  updatedBy: String
+}
+
+type ProductsOutput {
+  collection: [Product!]!
+  totalCount: Float!
+}
+
 type Query {
   getCategories(filter: GetCategoryFilterInput, pagination: PaginationInput, sort: SortInput): CategoriesPayload!
   getCurrentAccount: Account!
+  getProducts(filter: GetProductsFilterInput, pagination: PaginationInput, sort: SortInput): ProductsOutput!
 }
 
 input SortInput {
