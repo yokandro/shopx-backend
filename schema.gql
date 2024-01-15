@@ -10,12 +10,18 @@ type Account {
   deletedAt: DateTime
   deletedBy: String
   email: String!
-  firstName: String!
-  hashedPassword: String!
-  hashedRefreshToken: String!
-  lastName: String!
+  hashedPassword: String
+  hashedRefreshToken: String
+  role: Roles!
+  status: AccountStatuses!
   updatedAt: DateTime!
   updatedBy: String
+}
+
+enum AccountStatuses {
+  ACTIVE
+  INACTIVE
+  INVITED
 }
 
 type CategoriesPayload {
@@ -25,6 +31,7 @@ type CategoriesPayload {
 
 type Category {
   _id: String!
+  categoryName: String!
   createdAt: DateTime!
   createdBy: String
   deleted: Boolean!
@@ -48,6 +55,13 @@ input CreateProductInput {
   price: Float!
 }
 
+input CreateUserInput {
+  email: String!
+  firstName: String!
+  lastName: String!
+  role: Roles!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -61,9 +75,16 @@ input GetProductsFilterInput {
   searchTerm: String
 }
 
+input GetUsersFilterInput {
+  roles: [String!]
+  searchTerm: String
+  statuses: [String!]
+}
+
 type Mutation {
   createCategory(input: CreateCategoryInput!): Category!
   createProduct(input: CreateProductInput!): Product!
+  createUser(input: CreateUserInput!): User!
   login(email: String!, password: String!): TokensModel!
   refreshTokens: TokensModel!
 }
@@ -101,8 +122,14 @@ type ProductsOutput {
 
 type Query {
   getCategories(filter: GetCategoryFilterInput, pagination: PaginationInput, sort: SortInput): CategoriesPayload!
-  getCurrentAccount: Account!
+  getCurrentUser: User!
   getProducts(filter: GetProductsFilterInput, pagination: PaginationInput, sort: SortInput): ProductsOutput!
+  getUsers(filter: GetUsersFilterInput, pagination: PaginationInput, sort: SortInput): UsersOutput!
+}
+
+enum Roles {
+  ADMIN
+  USER
 }
 
 input SortInput {
@@ -114,4 +141,24 @@ type TokensModel {
   accessToken: String!
   refreshToken: String!
   refreshTokenExpiry: String
+}
+
+type User {
+  _id: String!
+  account: Account!
+  accountId: ObjectId!
+  createdAt: DateTime!
+  createdBy: String
+  deleted: Boolean!
+  deletedAt: DateTime
+  deletedBy: String
+  firstName: String!
+  lastName: String!
+  updatedAt: DateTime!
+  updatedBy: String
+}
+
+type UsersOutput {
+  collection: [User!]!
+  totalCount: Float!
 }

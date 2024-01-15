@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 
-import { AccountsModule } from 'src/api-modules/users/accounts/accounts.module';
+import { AccountsModule } from 'src/api-modules/accounts/accounts.module';
 
 import { AuthService } from './auth.service';
 import { AuthResolver } from './auth.resolver';

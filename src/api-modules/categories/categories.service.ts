@@ -2,7 +2,7 @@ import { Types } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
-import { Account } from 'src/api-modules/users/accounts/accounts.schema-model';
+import { Account } from 'src/api-modules/accounts/accounts.schema-model';
 
 import { CategoriesPayload, Category, CategoryModel } from './categories.schema-model';
 import type { CreateCategoryInput } from './args/create-category.args';
@@ -33,6 +33,25 @@ export class CategoryService {
       collection,
       totalCount,
     };
+  }
+
+  async joinCategoryName(categoryId: Types.ObjectId): Promise<string> {
+    const category = await this.getCategoryById(categoryId);
+    let name = category.name;
+
+    if (category.parentCategoryId) {
+      name += '/' + (await this.joinCategoryName(category.parentCategoryId));
+    }
+
+    return name;
+  }
+
+  async getCategoryNameById(categoryId: Types.ObjectId): Promise<string> {
+    if (!categoryId) return '';
+
+    const name = await this.joinCategoryName(categoryId);
+
+    return name.split('/').reverse().join('/');
   }
 
   async getCategoryById(id: Types.ObjectId): Promise<Category> {

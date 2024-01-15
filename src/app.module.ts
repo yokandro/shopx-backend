@@ -6,7 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { isDevelopment } from 'src/api-modules/common/common.helpers';
+import { isDevelopment } from 'src/api-modules/common/helpers/common.helpers';
 
 import ApiModules from './api-modules';
 import { ObjectIdScalar } from './app.graphql-scalar';

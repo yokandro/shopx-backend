@@ -1,7 +1,7 @@
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 
-import { Account } from 'src/api-modules/users/accounts/accounts.schema-model';
+import { Account } from 'src/api-modules/accounts/accounts.schema-model';
 
 import { EmailPasswordGuard } from './guards';
 import { CurrentAccount } from './auth.decorators';

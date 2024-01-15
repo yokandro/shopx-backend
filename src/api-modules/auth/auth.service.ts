@@ -3,8 +3,8 @@ import bcrypt from 'bcrypt';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
-import { AccountsService } from 'src/api-modules/users/accounts/accounts.service';
-import { Account } from 'src/api-modules/users/accounts/accounts.schema-model';
+import { AccountsService } from 'src/api-modules/accounts/accounts.service';
+import { Account } from 'src/api-modules/accounts/accounts.schema-model';
 
 import { TokensModel } from './auth.models';
 

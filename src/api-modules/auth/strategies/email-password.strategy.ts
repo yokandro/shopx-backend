@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { AuthService } from 'src/api-modules/auth/auth.service';
-import { Account } from 'src/api-modules/users/accounts/accounts.schema-model';
+import { Account } from 'src/api-modules/accounts/accounts.schema-model';
 
 @Injectable()
 export class EmailPasswordStrategy extends PassportStrategy(Strategy, 'local') {

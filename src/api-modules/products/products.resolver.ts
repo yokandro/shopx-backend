@@ -2,8 +2,9 @@ import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/g
 import { UseGuards } from '@nestjs/common';
 
 import { AccessTokenGuard } from 'src/api-modules/auth/guards/access-token.guard';
-import { Account } from 'src/api-modules/users/accounts/accounts.schema-model';
+import { Account } from 'src/api-modules/accounts/accounts.schema-model';
 import { CurrentAccount } from 'src/api-modules/auth/auth.decorators';
+import { CategoryService } from 'src/api-modules/categories/categories.service';
 
 import { Product, ProductsOutput } from './products.schema-model';
 import { ProductsService } from './products.service';
@@ -12,7 +13,10 @@ import { GetProductsArgs } from './args/get-products.args';
 
 @Resolver(() => Product)
 export class ProductsResolver {
-  constructor(private readonly productsService: ProductsService) {}
+  constructor(
+    private readonly productsService: ProductsService,
+    private readonly categoryService: CategoryService
+  ) {}
 
   @Query(() => ProductsOutput)
   @UseGuards(AccessTokenGuard)
@@ -31,6 +35,6 @@ export class ProductsResolver {
 
   @ResolveField(() => String)
   async categoryName(@Parent() { categoryId }: Product) {
-    return this.productsService.getProductCategoryNameById(categoryId);
+    return this.categoryService.getCategoryNameById(categoryId);
   }
 }
