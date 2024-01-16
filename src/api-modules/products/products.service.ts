@@ -7,6 +7,10 @@ import { getPaginatedPipeline } from 'src/api-modules/common/helpers/pipelines.h
 import { Product, ProductModel, ProductsOutput } from './products.schema-model';
 import { CreateProductInput } from './args/create-product.args';
 import { GetProductsArgs } from './args/get-products.args';
+import { ChangeProductStatusInput } from './args/change-product-status.args';
+import { UpdateProductInput } from './args/update-product.args';
+import { Types } from 'mongoose';
+import { ProductStatuses } from './products.constants';
 
 @Injectable()
 export class ProductsService {
@@ -19,6 +23,50 @@ export class ProductsService {
       code: Math.floor(Math.random() * 1000000000),
       createdBy: account._id,
     });
+  }
+
+  async updateProduct(input: UpdateProductInput, account: Account): Promise<Product> {
+    const { productId, ...dataToUpdate } = input;
+    const product = await this.productModel.findById(productId);
+
+    if (product && product.status === ProductStatuses.PUBLISHED) {
+      throw new Error('Cannot update published product');
+    }
+
+    return this.productModel.findByIdAndUpdate(
+      productId,
+      { $set: { ...dataToUpdate, updatedBy: account._id } },
+      { new: true }
+    );
+  }
+
+  async deleteProductById(productId: Types.ObjectId): Promise<boolean> {
+    const product = await this.productModel.findById(productId);
+
+    if (product && product.status === ProductStatuses.PUBLISHED) {
+      throw new Error('Cannot delete published product');
+    }
+
+    await this.productModel.deleteOne(productId);
+
+    return true;
+  }
+
+  async changeProductStatus(
+    { productId, status }: ChangeProductStatusInput,
+    account: Account
+  ): Promise<Product> {
+    const product = await this.productModel.findById(productId);
+
+    if (!product) {
+      throw new Error('Product not found');
+    }
+
+    return this.productModel.findByIdAndUpdate(
+      productId,
+      { $set: { status, updatedBy: account._id } },
+      { new: true }
+    );
   }
 
   async getProducts(args: GetProductsArgs): Promise<ProductsOutput> {
@@ -42,6 +90,7 @@ export class ProductsService {
       {
         $match: {
           searchTerm: { $regex: filter.searchTerm, $options: 'i' },
+          ...(filter.statuses && { status: { $in: filter.statuses } }),
         },
       },
       ...getPaginatedPipeline(args.sort, args.pagination),

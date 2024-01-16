@@ -1,3 +1,4 @@
+import { Types } from 'mongoose';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 
@@ -10,6 +11,8 @@ import { Product, ProductsOutput } from './products.schema-model';
 import { ProductsService } from './products.service';
 import { CreateProductArgs } from './args/create-product.args';
 import { GetProductsArgs } from './args/get-products.args';
+import { ChangeProductStatusArgs } from './args/change-product-status.args';
+import { UpdateProductArgs } from './args/update-product.args';
 
 @Resolver(() => Product)
 export class ProductsResolver {
@@ -31,6 +34,32 @@ export class ProductsResolver {
     @CurrentAccount() account: Account
   ) {
     return this.productsService.createProduct(input, account);
+  }
+
+  @Mutation(() => Product)
+  @UseGuards(AccessTokenGuard)
+  async updateProduct(
+    @Args({ type: () => UpdateProductArgs }) { input }: UpdateProductArgs,
+    @CurrentAccount() account: Account
+  ) {
+    return this.productsService.updateProduct(input, account);
+  }
+
+  @Mutation(() => Boolean)
+  @UseGuards(AccessTokenGuard)
+  async deleteProductById(
+    @Args('productId', { type: () => Types.ObjectId }) productId: Types.ObjectId
+  ) {
+    return this.productsService.deleteProductById(productId);
+  }
+
+  @Mutation(() => Product)
+  @UseGuards(AccessTokenGuard)
+  async changeProductStatus(
+    @Args({ type: () => ChangeProductStatusArgs }) { input }: ChangeProductStatusArgs,
+    @CurrentAccount() account: Account
+  ) {
+    return this.productsService.changeProductStatus(input, account);
   }
 
   @ResolveField(() => String)

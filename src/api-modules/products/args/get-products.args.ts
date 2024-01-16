@@ -6,6 +6,9 @@ import { CommonArgs } from 'src/api-modules/common/common.args';
 export class GetProductsFilterInput {
   @Field(() => String, { nullable: true })
   searchTerm?: string;
+
+  @Field(() => [String], { nullable: true })
+  statuses?: string[];
 }
 
 @ArgsType()
