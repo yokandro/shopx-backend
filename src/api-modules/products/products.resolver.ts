@@ -62,8 +62,9 @@ export class ProductsResolver {
     return this.productsService.changeProductStatus(input, account);
   }
 
-  @ResolveField(() => String)
+  @ResolveField(() => String, { nullable: true })
   async categoryName(@Parent() { categoryId }: Product) {
+    if (!categoryId) return null;
     return this.categoryService.getCategoryNameById(categoryId);
   }
 }

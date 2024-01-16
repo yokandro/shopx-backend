@@ -31,12 +31,13 @@ type CategoriesPayload {
 
 type Category {
   _id: String!
-  categoryName: String!
+  categoryName: String
   createdAt: DateTime!
   createdBy: String
   deleted: Boolean!
   deletedAt: DateTime
   deletedBy: String
+  description: String
   name: String!
   parentCategoryId: ObjectId
   updatedAt: DateTime!
@@ -49,12 +50,13 @@ input ChangeProductStatusInput {
 }
 
 input CreateCategoryInput {
+  description: String
   name: String!
   parentCategoryId: ObjectId
 }
 
 input CreateProductInput {
-  categoryId: ObjectId!
+  categoryId: ObjectId
   description: String
   name: String!
   price: Float!
@@ -77,6 +79,7 @@ input GetCategoryFilterInput {
 }
 
 input GetProductsFilterInput {
+  categoryIds: [ObjectId!]
   searchTerm: String
   statuses: [String!]
 }
@@ -92,9 +95,11 @@ type Mutation {
   createCategory(input: CreateCategoryInput!): Category!
   createProduct(input: CreateProductInput!): Product!
   createUser(input: CreateUserInput!): User!
+  deleteCategoryById(categoryId: ObjectId!): Boolean!
   deleteProductById(productId: ObjectId!): Boolean!
   login(email: String!, password: String!): TokensModel!
   refreshTokens: TokensModel!
+  updateCategory(input: UpdateCategoryInput!): Category!
   updateProduct(input: UpdateProductInput!): Product!
 }
 
@@ -108,8 +113,8 @@ input PaginationInput {
 
 type Product {
   _id: String!
-  categoryId: ObjectId!
-  categoryName: String!
+  categoryId: ObjectId
+  categoryName: String
   code: Float!
   createdAt: DateTime!
   createdBy: String
@@ -159,8 +164,15 @@ type TokensModel {
   refreshTokenExpiry: String
 }
 
-input UpdateProductInput {
+input UpdateCategoryInput {
   categoryId: ObjectId!
+  description: String
+  name: String
+  parentCategoryId: ObjectId
+}
+
+input UpdateProductInput {
+  categoryId: ObjectId
   description: String!
   name: String!
   price: Float!

@@ -2,19 +2,22 @@ import { ArgsType, Field, InputType } from '@nestjs/graphql';
 import { Types } from 'mongoose';
 
 @InputType()
-export class CreateCategoryInput {
-  @Field(() => String)
-  name: string;
+export class UpdateCategoryInput {
+  @Field(() => String, { nullable: true })
+  name?: string;
 
   @Field(() => Types.ObjectId, { nullable: true })
   parentCategoryId?: Types.ObjectId;
+
+  @Field(() => Types.ObjectId)
+  categoryId: Types.ObjectId;
 
   @Field(() => String, { nullable: true })
   description?: string;
 }
 
 @ArgsType()
-export class CreateCategoryArgs {
-  @Field(() => CreateCategoryInput)
-  input: CreateCategoryInput;
+export class UpdateCategoryArgs {
+  @Field(() => UpdateCategoryInput)
+  input: UpdateCategoryInput;
 }

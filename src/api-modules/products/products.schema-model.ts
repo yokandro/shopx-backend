@@ -19,9 +19,9 @@ export class Product extends BaseModel {
   @Prop({ type: String })
   description?: string;
 
-  @Field(() => Types.ObjectId)
-  @Prop({ type: Types.ObjectId, required: true, ref: Category.name })
-  categoryId: Types.ObjectId;
+  @Field(() => Types.ObjectId, { nullable: true })
+  @Prop({ type: Types.ObjectId, ref: Category.name })
+  categoryId?: Types.ObjectId;
 
   @Field(() => Number)
   @Prop({ type: Number, required: true })
@@ -40,8 +40,8 @@ export class Product extends BaseModel {
   status: ProductStatuses;
 
   // resolvers
-  @Field(() => String)
-  categoryName: string;
+  @Field(() => String, { nullable: true })
+  categoryName?: string;
 }
 
 @ObjectType()

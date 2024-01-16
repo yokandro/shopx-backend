@@ -3,3 +3,7 @@ export enum ProductStatuses {
   DRAFT = 'DRAFT',
   ARCHIVED = 'ARCHIVED',
 }
+
+export enum ProductEventsEnum {
+  DELETE_CATEGORY = 'DELETE_CATEGORY',
+}

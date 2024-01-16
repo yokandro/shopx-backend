@@ -69,6 +69,10 @@ export class ProductsService {
     );
   }
 
+  async getProductsByCategoryId(categoryId: Types.ObjectId): Promise<Product[]> {
+    return this.productModel.find({ categoryId });
+  }
+
   async getProducts(args: GetProductsArgs): Promise<ProductsOutput> {
     const { filter } = args;
 
@@ -79,12 +83,24 @@ export class ProductsService {
           localField: 'categoryId',
           foreignField: '_id',
           as: 'category',
+          pipeline: [
+            {
+              $match:
+                filter?.categoryIds && filter.categoryIds.length > 0
+                  ? {
+                      _id: { $in: filter.categoryIds },
+                    }
+                  : {},
+            },
+          ],
         },
       },
-      { $unwind: '$category' },
+      { $unwind: { path: '$category', preserveNullAndEmptyArrays: true } },
       {
         $addFields: {
-          searchTerm: { $concat: ['$name', { $toString: '$code' }, '$category.name'] },
+          searchTerm: {
+            $concat: ['$name', { $toString: '$code' }, { $ifNull: ['$category.name', ''] }],
+          },
         },
       },
       {

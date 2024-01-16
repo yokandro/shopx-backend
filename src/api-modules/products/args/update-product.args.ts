@@ -12,8 +12,8 @@ export class UpdateProductInput {
   @Field(() => String)
   description: string;
 
-  @Field(() => Types.ObjectId)
-  categoryId: Types.ObjectId;
+  @Field(() => Types.ObjectId, { nullable: true })
+  categoryId?: Types.ObjectId;
 
   @Field(() => Number)
   price: number;

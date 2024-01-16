@@ -1,5 +1,6 @@
 import { join } from 'path';
 
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ApolloDriver } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -14,6 +15,7 @@ import { ObjectIdScalar } from './app.graphql-scalar';
 
 @Module({
   imports: [
+    EventEmitterModule.forRoot(),
     ConfigModule.forRoot({ envFilePath: '.env' }),
     MongooseModule.forRoot(process.env.MONGO_URI),
     GraphQLModule.forRoot({

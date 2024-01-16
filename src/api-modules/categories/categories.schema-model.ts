@@ -11,13 +11,17 @@ export class Category extends BaseModel {
   @Prop({ type: String, required: true })
   name: string;
 
+  @Field(() => String, { nullable: true })
+  @Prop({ type: String })
+  description?: string;
+
   @Field(() => Types.ObjectId, { nullable: true })
   @Prop({ type: Types.ObjectId })
   parentCategoryId?: Types.ObjectId;
 
   // resolvers
-  @Field(() => String)
-  categoryName: string;
+  @Field(() => String, { nullable: true })
+  categoryName?: string;
 }
 
 @ObjectType()
