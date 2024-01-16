@@ -83,16 +83,6 @@ export class ProductsService {
           localField: 'categoryId',
           foreignField: '_id',
           as: 'category',
-          pipeline: [
-            {
-              $match:
-                filter?.categoryIds && filter.categoryIds.length > 0
-                  ? {
-                      _id: { $in: filter.categoryIds },
-                    }
-                  : {},
-            },
-          ],
         },
       },
       { $unwind: { path: '$category', preserveNullAndEmptyArrays: true } },
@@ -107,6 +97,7 @@ export class ProductsService {
         $match: {
           searchTerm: { $regex: filter.searchTerm, $options: 'i' },
           ...(filter.statuses && { status: { $in: filter.statuses } }),
+          ...(filter.categoryIds && { categoryId: { $in: filter.categoryIds } }),
         },
       },
       ...getPaginatedPipeline(args.sort, args.pagination),
