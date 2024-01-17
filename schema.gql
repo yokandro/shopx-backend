@@ -97,8 +97,10 @@ type Mutation {
   createUser(input: CreateUserInput!): User!
   deleteCategoryById(categoryId: ObjectId!): Boolean!
   deleteProductById(productId: ObjectId!): Boolean!
+  deleteUser(userId: ObjectId!): Boolean!
   login(email: String!, password: String!): TokensModel!
   refreshTokens: TokensModel!
+  resendUserInvitationEmail(userId: ObjectId!): User!
   updateCategory(input: UpdateCategoryInput!): Category!
   updateProduct(input: UpdateProductInput!): Product!
 }

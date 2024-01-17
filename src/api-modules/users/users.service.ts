@@ -1,10 +1,13 @@
 import { Types } from 'mongoose';
+
+import { JwtService } from '@nestjs/jwt';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
 import { AccountsService } from 'src/api-modules/accounts/accounts.service';
 import { AccountStatuses } from 'src/api-modules/accounts/accounts.constants';
 import { getPaginatedPipeline } from 'src/api-modules/common/helpers/pipelines.helpers';
+import { EmailService } from 'src/utility-modules/email/email.service';
 
 import { INITIAL_SHOPX_USERS, INITIAL_SHOPX_USER_IDS } from './users.constants';
 import { CreateUserInput } from './args/create-user.args';
@@ -15,7 +18,9 @@ import { GetUsersArgs } from './args/get-users.args';
 export class UserService implements OnModuleInit {
   constructor(
     @InjectModel(User.name) private userModel: UserModel,
-    private readonly accountsService: AccountsService
+    private readonly accountsService: AccountsService,
+    private readonly emailService: EmailService,
+    private readonly jwtService: JwtService
   ) {}
 
   async createUser({ firstName, lastName, ...accountToCreate }: CreateUserInput): Promise<User> {
@@ -33,6 +38,8 @@ export class UserService implements OnModuleInit {
     if (!user) {
       throw new Error('User not created');
     }
+
+    await this.sendUserInvitationEmail(user._id);
 
     return user;
   }
@@ -80,6 +87,39 @@ export class UserService implements OnModuleInit {
 
   async getCurrentUser(accountId: Types.ObjectId): Promise<User> {
     return this.userModel.findOne({ accountId });
+  }
+
+  async deleteUser(userId: Types.ObjectId): Promise<boolean> {
+    const user = await this.userModel.findById(userId);
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    await this.accountsService.deleteAccount(user.accountId);
+
+    return this.userModel.deleteOne({ _id: userId }).then(({ deletedCount }) => !!deletedCount);
+  }
+
+  async sendUserInvitationEmail(userId: Types.ObjectId): Promise<User> {
+    const user = await this.userModel.findById(userId);
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const account = await this.accountsService.getAccountById(user.accountId);
+
+    const payload = { email: account.email, sub: account._id };
+
+    const token = this.jwtService.sign(payload, {
+      secret: process.env.JWT_SECRET,
+      expiresIn: process.env.JWT_SECRET_TIME,
+    });
+
+    await this.emailService.sendEmail(`${process.env.ORIGIN_URL}/auth/login?token=${token}`);
+
+    return user;
   }
 
   async onModuleInit() {

@@ -6,6 +6,7 @@ import { InjectModel } from '@nestjs/mongoose';
 
 import { Account, AccountModel } from './accounts.schema-model';
 import { CreateAccountType } from './types/create-account.type';
+import { AccountStatuses } from './accounts.constants';
 
 @Injectable()
 export class AccountsService {
@@ -27,6 +28,10 @@ export class AccountsService {
     }
 
     return this.accountModel.create(accountToCreate);
+  }
+
+  async deleteAccount(accountId: Types.ObjectId): Promise<boolean> {
+    return !!(await this.accountModel.findByIdAndDelete(accountId));
   }
 
   async getAccountsByQuery(query: FilterQuery<Account>): Promise<Account[]> {
@@ -65,6 +70,19 @@ export class AccountsService {
     }
 
     return null;
+  }
+
+  public async setAccountHashedPassword(
+    password: string,
+    accountId: Types.ObjectId
+  ): Promise<Account> {
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    return this.accountModel.findByIdAndUpdate(
+      accountId,
+      { $set: { hashedPassword, status: AccountStatuses.ACTIVE } },
+      { new: true }
+    );
   }
 
   public async setCurrentRefreshToken(

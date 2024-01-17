@@ -15,7 +15,7 @@ export class Account extends BaseModel {
   email: string;
 
   @Field(() => String, { nullable: true })
-  @Prop({ type: String, unique: true })
+  @Prop({ type: String })
   hashedPassword?: string;
 
   @Field(() => String, { nullable: true })

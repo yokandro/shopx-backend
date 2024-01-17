@@ -1,3 +1,5 @@
+import { Types } from 'mongoose';
+
 import { Args, Query, Mutation, Parent, ResolveField, Resolver } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 
@@ -34,6 +36,18 @@ export class UsersResolver {
   @UseGuards(AccessTokenGuard)
   async createUser(@Args({ type: () => CreateUserArgs }) args: CreateUserArgs): Promise<User> {
     return this.usersService.createUser(args.input);
+  }
+
+  @Mutation(() => User)
+  @UseGuards(AccessTokenGuard)
+  async resendUserInvitationEmail(@Args('userId') userId: Types.ObjectId): Promise<User> {
+    return this.usersService.sendUserInvitationEmail(userId);
+  }
+
+  @Mutation(() => Boolean)
+  @UseGuards(AccessTokenGuard)
+  async deleteUser(@Args('userId') userId: Types.ObjectId): Promise<boolean> {
+    return this.usersService.deleteUser(userId);
   }
 
   @ResolveField(() => Account)

@@ -38,6 +38,10 @@ export class AuthService {
 
     const { hashedPassword } = account;
 
+    if (!hashedPassword) {
+      return this.accountsService.setAccountHashedPassword(password, account._id);
+    }
+
     const passwordIsValid = await bcrypt.compare(password, hashedPassword);
 
     if (!passwordIsValid) {
