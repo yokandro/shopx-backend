@@ -8,6 +8,7 @@ import { AccountsService } from 'src/api-modules/accounts/accounts.service';
 import { AccountStatuses } from 'src/api-modules/accounts/accounts.constants';
 import { getPaginatedPipeline } from 'src/api-modules/common/helpers/pipelines.helpers';
 import { EmailService } from 'src/utility-modules/email/email.service';
+import { Account } from 'src/api-modules/accounts/accounts.schema-model';
 
 import { INITIAL_SHOPX_USERS, INITIAL_SHOPX_USER_IDS } from './users.constants';
 import { CreateUserInput } from './args/create-user.args';
@@ -89,11 +90,15 @@ export class UserService implements OnModuleInit {
     return this.userModel.findOne({ accountId });
   }
 
-  async deleteUser(userId: Types.ObjectId): Promise<boolean> {
+  async deleteUser(userId: Types.ObjectId, account: Account): Promise<boolean> {
     const user = await this.userModel.findById(userId);
 
     if (!user) {
       throw new Error('User not found');
+    }
+
+    if (account._id.equals(user.accountId)) {
+      throw new Error('You cannot delete own account');
     }
 
     await this.accountsService.deleteAccount(user.accountId);

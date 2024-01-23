@@ -46,8 +46,11 @@ export class UsersResolver {
 
   @Mutation(() => Boolean)
   @UseGuards(AccessTokenGuard)
-  async deleteUser(@Args('userId') userId: Types.ObjectId): Promise<boolean> {
-    return this.usersService.deleteUser(userId);
+  async deleteUser(
+    @Args('userId') userId: Types.ObjectId,
+    @CurrentAccount() account: Account
+  ): Promise<boolean> {
+    return this.usersService.deleteUser(userId, account);
   }
 
   @ResolveField(() => Account)
